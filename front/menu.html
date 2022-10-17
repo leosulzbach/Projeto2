@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/menu.css">
+    <script src="https://kit.fontawesome.com/caa0f340eb.js" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div id="navMenu" class="diamond" onclick="out()">
+            <div id="mainRotCorrect" class="rotCorrect"><i class="fa fa-right-from-bracket fa-4x"
+                    aria-hidden="true"></i></div>
+        </div>
+
+        <div id="nav1" class="nav nav1 diamond" onclick="toUsers()">
+            <div class="rotCorrect"><i class="fa fa-person fa-2x" aria-hidden="true"></i></div>
+        </div>
+        <!--<div class="popUp">Home</div>-->
+        <div id="nav2" class="nav nav2 diamond">
+            <div class="rotCorrect"><i class="fa fa-flag-usa fa-2x" aria-hidden="true" onclick="toCities()"></i></div>
+        </div>
+        <div id="nav3" class="nav nav3 diamond">
+            <div class="rotCorrect" onclick="toStates()"><i class="fa fa-city fa-2x" aria-hidden="true"></i></div>
+        </div>
+        <div id="nav4" class="nav nav4 diamond">
+            <div class="rotCorrect"><i class="fa fa-line-chart fa-2x" aria-hidden="true"></i></div>
+        </div>
+        <div id="nav5" class="nav nav5 diamond">
+            <div class="rotCorrect"><i class="fa fa-cogs fa-2x" aria-hidden="true"></i></div>
+        </div>
+    </div>
+    
+</body>
+
+<script>
+    const api = 'http://localhost:3000/';
+
+    function getLogado() {
+        return JSON.parse(localStorage.getItem('logado'))
+    }
+
+    async function verify() {
+        let logado = getLogado();
+
+        if (logado == null) {
+            window.location = 'login.html'
+            return;
+        }
+
+        let authorization = logado.email + ":" + logado.password;
+        let base64 = btoa(authorization);
+
+        let headers = new Headers({
+            authorization: "Basic " + base64
+        });
+
+        let options = {
+            headers: headers,
+            method: 'GET',
+            cache: "no-store"
+        }
+
+        let url = api + 'verify';
+        const response = await fetch(url, options);
+        const usuario = await response.json();
+
+        console.log(usuario);
+
+        if (!usuario) {
+            window.location = 'login.html'
+        }
+        else {
+            let loggeAt = new Date(usuario.loggedAt);
+            let dataAtual = new Date();
+
+            //comparar se passou mais de 1 hora logado
+            //entao deslogar
+        }
+    }
+
+    function out() {
+        localStorage.removeItem('logado');
+        window.location.reload();
+    }
+
+
+    async function toUsers() {
+        window.location = 'users.html';
+    }
+    async function toCities() {
+        window.location = 'cities.html';
+    }
+    async function toStates() {
+        window.location = 'states.html';
+    }
+
+    verify();
+</script>
+
+</html>
